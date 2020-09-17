@@ -2,11 +2,11 @@
   "name": "oratrix",
   "version": "0.0.1",
   "description": "",
-  "main": "build/Cli.js",
+  "main": "build/cli.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "start": "node build/Cli.js",
+    "start": "node build/cli.js",
     "prepare": "npm run build",
     "test": "mocha -r ts-node/register test/*"
   },
@@ -31,6 +31,6 @@
   },
   "preferGlobal": true,
   "bin": {
-    "oratrix": "build/Cli.js"
+    "oratrix": "build/cli.js"
   }
 }

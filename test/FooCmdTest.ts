@@ -1,14 +1,15 @@
-import * as FooCmd from '../src/commands/FooCmd';
 import * as assert from 'assert';
+import * as FooCmd from '../src/commands/fooCmd';
 
 describe('A Foo command', () => {
-
   it('Should contain the properties', () => {
-    assert.equal(FooCmd.command, 'foo');
-    assert.equal(FooCmd.desc, 'Prints hello world.');
-    assert.equal(FooCmd.builder.uppercase.alias, 'u');
-    assert.equal(FooCmd.builder.uppercase.describe, 'Prints the message in uppercase.');
-    assert.equal(FooCmd.builder.uppercase.default, false);
+    assert.strictEqual(FooCmd.command, 'foo');
+    assert.strictEqual(FooCmd.desc, 'Prints hello world.');
+    assert.strictEqual(FooCmd.builder.uppercase.alias, 'u');
+    assert.strictEqual(
+      FooCmd.builder.uppercase.describe,
+      'Prints the message in uppercase.'
+    );
+    assert.strictEqual(FooCmd.builder.uppercase.default, false);
   });
-
 });

@@ -1,5 +1,5 @@
 /**
- * This is an 'extracted' yargs command that communicates with 
+ * This is an 'extracted' yargs command that communicates with
  * core/business layer.
  */
 import Foo from '../core/Foo';

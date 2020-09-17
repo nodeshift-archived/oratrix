@@ -3,11 +3,11 @@ import axios from 'axios';
 // To avoid throwing errors with 404.
 axios.defaults.validateStatus = (_) => true;
 
-const PKGJSON = '/master/package.json';
+const PACKAGE_JSON = '/master/package.json';
 const GITHUB = 'github.com';
-const RAWGITHUB = 'raw.githubusercontent.com';
+const RAW_GITHUB = 'raw.githubusercontent.com';
 
-export default class GithubFetcher {
+class GithubFetcher {
   /**
    * Gets all repositories from given github organization.
    * @param organization organization to look at.
@@ -41,8 +41,8 @@ export default class GithubFetcher {
    */
   prepare(repositories: string[]) {
     return repositories.map((repository) => {
-      repository = repository.replace(GITHUB, RAWGITHUB);
-      return repository + PKGJSON;
+      repository = repository.replace(GITHUB, RAW_GITHUB);
+      return repository + PACKAGE_JSON;
     });
   }
 
@@ -58,3 +58,5 @@ export default class GithubFetcher {
     });
   }
 }
+
+export default GithubFetcher;

@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 
 import yargs from 'yargs';
-
-import Option from './Option';
+import * as option from './option';
 
 // Initialize the options.
 const options = {
-  fields: Option.fields(),
-  organization: Option.organization()
+  fields: option.fields(),
+  organization: option.organization(),
 };
 
-yargs
-  .commandDir('commands')
-  .demandCommand(1)
-  .options(options).argv;
+yargs.commandDir('commands').demandCommand(1).options(options).argv;
