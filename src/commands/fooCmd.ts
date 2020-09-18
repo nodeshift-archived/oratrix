@@ -2,7 +2,7 @@
  * This is an 'extracted' yargs command that communicates with
  * core/business layer.
  */
-import Foo from '../core/Foo';
+import Foo from '../core/foo';
 
 export const command = 'foo';
 
