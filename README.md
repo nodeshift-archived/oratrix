@@ -12,10 +12,10 @@ node build/cli.js
 ```
 
 ```
-Cli.js <command>
+cli.js <command>
 
 Commands:
-  Cli.js foo  Prints hello world.
+  cli.js foo  Prints hello world.
 
 Options:
       --help          Show help                                        [boolean]
