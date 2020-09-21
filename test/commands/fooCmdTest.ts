@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import * as FooCmd from '../src/commands/fooCmd';
+import * as FooCmd from '../../src/commands/fooCmd';
 
 describe('A Foo command', () => {
   it('Should contain the properties', () => {

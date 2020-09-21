@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import Foo from '../src/core/foo';
+import Foo from '../../src/core/foo';
 
 describe('A Foo', () => {
   const foo = new Foo();

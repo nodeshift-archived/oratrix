@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { fields } from '../src/util/fieldLoader';
+import { fields } from '../../src/util/fieldLoader';
 
 describe('A Field loader', () => {
   it('Should contain fields', () => {

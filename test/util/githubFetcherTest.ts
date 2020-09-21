@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import GithubFetcher from '../src/util/githubFetcher';
+import GithubFetcher from '../../src/util/githubFetcher';
 
 describe('A GithubFetcher', () => {
   const githubFetcher = new GithubFetcher();
