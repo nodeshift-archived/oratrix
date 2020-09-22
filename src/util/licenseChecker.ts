@@ -19,7 +19,7 @@ export default class LicenseChecker {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       checker.init(options, (error: string, jsonArray: any) => {
         if (error) {
-          reject(error);
+          reject('error');
         } else {
           resolve(
             Object.keys(jsonArray).map((json) => {
