@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as checker from 'license-checker';
 
 interface LicenseData {
@@ -43,7 +44,8 @@ export default class LicenseChecker {
    * @param result A result data returned by license-checker.
    * @returns LicenseData[]
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   mapResult(result: any): LicenseData[] {
     return Object.keys(result).map((r) => {
       result[r].moduleName = r;

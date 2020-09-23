@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // To avoid throwing errors with 404.
-axios.defaults.validateStatus = function () { return true };
+axios.defaults.validateStatus = () => true;
 
 const PACKAGE_JSON = '/master/package.json';
 const GITHUB = 'github.com';
