@@ -1,5 +1,7 @@
 # oratrix
 
+![Node.js CI](https://github.com/nodeshift/oratrix/workflows/Node.js%20CI/badge.svg)
+
 > More information about the project's name [here](https://commons.wikimedia.org/wiki/File:Amazona_oratrix_1zz.jpg)
 
 ```
