@@ -5,9 +5,12 @@ describe('A LicenceChecker', () => {
   const licenseChecker = new LicenseChecker();
   it('Should check licenses', async () => {
     const result = await licenseChecker.search(process.cwd());
-    result.forEach(r => {
-      console.log(r.name, r.licenses);
+    
+    // TODO to remove this code.
+    licenseChecker.data.forEach(ld => {
+      console.log(ld.url, ld.moduleName);
     });
+
     assert.strictEqual(result.length, 77);
   });
 });

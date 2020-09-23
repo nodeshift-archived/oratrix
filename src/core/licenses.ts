@@ -6,7 +6,7 @@ class Licenses {
     const licenses = await licenseChecker.search(directory);
     let result = '';
     licenses.forEach(l => {
-      result += l.name + ',' + l.licenses + '\n';
+      result += l.moduleName + ',' + l.licenses + '\n';
     })
     return result;
   }

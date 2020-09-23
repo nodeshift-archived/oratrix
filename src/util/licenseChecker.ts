@@ -1,38 +1,52 @@
 import * as checker from 'license-checker';
 
-interface License {
-  name: string;
-  licenses: string | string[];
+interface LicenseData {
+  licenses: string;
+  repository: string;
+  publisher: string;
+  email: string;
+  url: string;
+  path: string;
+  licenseFile: string;
+  moduleName: string;
 }
 
 export default class LicenseChecker {
+
+  data: LicenseData[] = [];
+
   /**
    * Searches for licenses of a node.js project.
    * It returns project level direct dependencies and its sub-dependencies,
    * for production dependencies only.
    * @param directory The directory of the project root to search for licenses
    */
-  async search(directory: string): Promise<License[]> {
+  async search(directory: string): Promise<LicenseData[]> {
     return new Promise((resolve, reject) => {
       const options = { start: directory, production: true };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      checker.init(options, (error: string, jsonArray: any) => {
+      checker.init(options, (error: string, result: any) => {
         if (error) {
           reject('error');
         } else {
-          resolve(
-            Object.keys(jsonArray).map((json) => {
-              jsonArray[json].dependency = json;
+          resolve(Object.keys(result).map((r) => {
+            result[r].moduleName = r;
 
-              const license: License = {
-                name: jsonArray[json].dependency,
-                licenses: jsonArray[json].licenses,
-              };
+            const licenseData: LicenseData = {
+              licenses: result[r].licenses,
+              repository: result[r].repository,
+              publisher: result[r].publisher,
+              email: result[r].email,
+              url: result[r].url,
+              path: result[r].path,
+              licenseFile: result[r].licenseFile,
+              moduleName: result[r].moduleName,
+            };
 
-              return license;
-            })
-          );
+            this.data.push(licenseData);
+            return licenseData;
+          }));
         }
       });
     });
