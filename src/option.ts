@@ -12,3 +12,8 @@ export const organization = () => ({
   required: false,
   alias: 'o',
 });
+
+export const cwd = () => ({
+  description: 'The current working directory',
+  default: process.cwd()
+});
