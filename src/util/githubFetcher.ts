@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // To avoid throwing errors with 404.
-axios.defaults.validateStatus = (_) => true;
+axios.defaults.validateStatus = function () { return true };
 
 const PACKAGE_JSON = '/master/package.json';
 const GITHUB = 'github.com';
@@ -14,7 +14,7 @@ class GithubFetcher {
    */
   async getRepositories(organization: string) {
     const result = await axios.get(
-      `https://api.github.com/orgs/${organization}/repos\?per_page\=50`
+      `https://api.github.com/orgs/${organization}/repos\\?per_page\\=50`
     );
     const repositories: string[] = [];
     result.data.forEach((resultData: { html_url: string }) =>
