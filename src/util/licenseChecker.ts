@@ -28,27 +28,39 @@ export default class LicenseChecker {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       checker.init(options, (error: string, result: any) => {
         if (error) {
-          reject('error');
+          reject(error);
         } else {
-          resolve(Object.keys(result).map((r) => {
-            result[r].moduleName = r;
-
-            const licenseData: LicenseData = {
-              licenses: result[r].licenses,
-              repository: result[r].repository,
-              publisher: result[r].publisher,
-              email: result[r].email,
-              url: result[r].url,
-              path: result[r].path,
-              licenseFile: result[r].licenseFile,
-              moduleName: result[r].moduleName,
-            };
-
-            this.data.push(licenseData);
-            return licenseData;
-          }));
+          this.data = this.mapResult(result);
+          resolve(this.data);
         }
       });
     });
+  }
+
+  /**
+   * Maps the result returned from license-checker in a custom
+   * type LicenseData.
+   * @param result A result data returned by license-checker.
+   * @returns LicenseData[]
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapResult(result: any): LicenseData[] {
+    return Object.keys(result).map((r) => {
+      result[r].moduleName = r;
+
+      const licenseData: LicenseData = {
+        licenses: result[r].licenses,
+        repository: result[r].repository,
+        publisher: result[r].publisher,
+        email: result[r].email,
+        url: result[r].url,
+        path: result[r].path,
+        licenseFile: result[r].licenseFile,
+        moduleName: result[r].moduleName,
+      };
+
+      this.data.push(licenseData);
+      return licenseData;
+    })
   }
 }
