@@ -1,7 +1,8 @@
 import * as assert from 'assert';
-import { fields } from '../../src/util/fieldLoader';
+import FieldLoader from '../../src/util/fieldLoader';
 
-describe('A Field loader', () => {
+describe('A Field loader', async () => {
+  const fields = await new FieldLoader().loadFields(null);
   it('Should contain fields', () => {
     assert.ok(fields.author === '');
     assert.ok(typeof fields.dependencies === 'object');
