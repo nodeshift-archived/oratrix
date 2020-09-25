@@ -15,7 +15,17 @@
     "node": ">=12"
   },
   "keywords": [],
-  "author": "",
+  "author": "Red Hat, Inc.",
+  "contributors": [
+    {
+      "name": "Alex Alikiotis",
+      "email": "alexalikiotis5@gmail.com"
+    },
+    {
+      "name": "Helio Frota",
+      "email": "00hf11@gmail.com"
+    }
+  ],
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/mocha": "^7.0.2",
