@@ -11,6 +11,9 @@
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.ts",
     "lint": "eslint . --ext .ts"
   },
+  "files": [
+    "build"
+  ],
   "engines": {
     "node": ">=12"
   },
