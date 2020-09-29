@@ -19,9 +19,5 @@ export const builder = {
 
 export const handler = async (argv: yargs.Arguments): Promise<void> => {
   const pkg = new Package();
-  if (argv.organization) {
-    pkg.runOrganizationCheck(argv.organization as string);
-  } else {
-    pkg.runLocalCheck();
-  }
+  pkg.run(argv.organization as string);
 };

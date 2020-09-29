@@ -7,8 +7,16 @@ class Package {
   fieldLoader = new FieldLoader();
   differ = new Differ();
 
+  async run(organization?: string): Promise<void> {
+    if (organization) {
+      this.runOrganizationCheck(organization);
+    } else {
+      this.runLocalCheck();
+    }
+  }
+
   async runLocalCheck(): Promise<void> {
-    const requiredFields = await this.fieldLoader.loadFields(null);
+    const requiredFields = await this.fieldLoader.loadFields();
     const packageFields = await this.fieldLoader.loadFields('./package.json');
     // get report from differ
     const report = this.differ.run(requiredFields, packageFields);
@@ -40,6 +48,7 @@ class Package {
 
   runOrganizationCheck(organization: string): void {
     // todo!
+    console.log(organization);
   }
 }
 

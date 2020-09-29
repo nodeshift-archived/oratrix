@@ -4,10 +4,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-type CustomPath = string | undefined | null;
-
 class FieldLoader {
-  async loadFields(customPath: CustomPath): Promise<Record<string, unknown>> {
+  async loadFields(customPath?: string): Promise<Record<string, unknown>> {
     const location = customPath
       ? path.join(process.cwd(), customPath)
       : path.join(__dirname, 'fields.json');
