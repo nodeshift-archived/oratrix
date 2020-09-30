@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import FieldLoader from '../util/fieldLoader';
 import Differ from '../util/differ';
 
-class Package {
+class Validator {
   fieldLoader = new FieldLoader();
   differ = new Differ();
 
@@ -52,4 +52,4 @@ class Package {
   }
 }
 
-export default Package;
+export default Validator;
