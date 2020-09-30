@@ -2,6 +2,7 @@ import Table from 'cli-table3';
 import chalk from 'chalk';
 import FieldLoader from '../util/fieldLoader';
 import Differ from '../util/differ';
+import GithubFetcher from '../util/githubFetcher';
 
 class Validator {
   fieldLoader = new FieldLoader();
@@ -46,9 +47,10 @@ class Validator {
     }
   }
 
-  runOrganizationCheck(organization: string): void {
-    // todo!
-    console.log(organization);
+  async runOrganizationCheck(organization: string): Promise<void> {
+    const ghFetcher = new GithubFetcher();
+    const result = await ghFetcher.fetch(organization);
+    console.log(result);
   }
 }
 
