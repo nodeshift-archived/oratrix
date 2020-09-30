@@ -37,7 +37,7 @@ class GithubFetcher {
   /**
    * Checks if the given repository has a package.json file.
    * @param repository github repository to check
-   * @returns boolean if package.json exists.
+   * @returns boolean true if package.json exists, false otherwise.
    */
   async hasPackageJSON(repository: string): Promise<boolean> {
     if (!repository || !repository.trim()) {
