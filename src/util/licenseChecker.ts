@@ -1,16 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as checker from 'license-checker';
-
-interface LicenseData {
-  licenses: string;
-  repository: string;
-  publisher: string;
-  email: string;
-  url: string;
-  path: string;
-  licenseFile: string;
-  moduleName: string;
-}
+import { LicenseData } from '../core/licenseData';
 
 export default class LicenseChecker {
 

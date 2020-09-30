@@ -17,7 +17,9 @@ export const builder = {
   },
 };
 
-export const handler = function (argv: yargs.Arguments): void {
+export const handler = async (argv: yargs.Arguments): Promise<void> => {
   const licenses = new Licenses();
-  licenses.run(argv.cwd as string);
+  const result = await licenses.run(argv.cwd as string);
+  // TODO: print out the license information using cli-table3
+  console.log(result);
 };

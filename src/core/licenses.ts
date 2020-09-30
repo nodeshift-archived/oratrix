@@ -1,17 +1,14 @@
 import LicenseChecker from '../util/licenseChecker';
+import { LicenseData } from '../core/licenseData';
 
 class Licenses {
 
-  async run(directory:string): Promise<void> {
-    const licenseChecker = new LicenseChecker();
-    const licenses = await licenseChecker.search(directory);
+  licenseData: LicenseData[] = [];
 
-    // Do some transformation and/or use cli-table to print out the data.
-    let result = '';
-    licenses.forEach(l => {
-      result += l.moduleName + ',' + l.licenses + '\n';
-    })
-    // console.log(result);
+  async run(directory:string): Promise<LicenseData[]> {
+    const licenseChecker = new LicenseChecker();
+    this.licenseData = await licenseChecker.search(directory);
+    return this.licenseData;
   }
 
 }
