@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+type JSObject = Record<string, unknown>;
+
 // To avoid throwing errors with 404.
 axios.defaults.validateStatus = () => true;
 
@@ -12,50 +14,54 @@ class GithubFetcher {
    * Gets all repositories from given github organization.
    * @param organization organization to look at.
    */
-  async getRepositories(organization: string) {
-    const result = await axios.get(
-      `https://api.github.com/orgs/${organization}/repos\\?per_page\\=50`
-    );
-    const repositories: string[] = [];
-    result.data.forEach((resultData: { html_url: string }) =>
-      repositories.push(resultData.html_url)
-    );
+  async getRepositories(organization: string): Promise<JSObject[]> {
+    const repositories: JSObject[] = [];
+    // collect all repositories from github
+    let page = 1;
+    let pageIsEmpty = false;
+    while (!pageIsEmpty) {
+      const { data } = await axios.get(
+        `https://api.github.com/orgs/${organization}/repos?per_page=50&page=${page}`
+      );
+      // no more data to parse
+      if (!Array.isArray(data) || data.length === 0) {
+        pageIsEmpty = true;
+        continue;
+      }
+      repositories.push(...(data as JSObject[]));
+      page++;
+    }
     return repositories;
   }
 
   /**
    * Checks if the given repository has a package.json file.
    * @param repository github repository to check
-   * @returns number status 200 if package.json exists.
+   * @returns boolean true if package.json exists, false otherwise.
    */
-  async hasPackageJSON(repository: string): Promise<number> {
+  async hasPackageJSON(repository: string): Promise<boolean> {
     if (!repository || !repository.trim()) {
       throw Error('Repository cannot be empty.');
     }
-    return (await axios.head(repository)).status;
+    return (await axios.head(repository)).status === 200;
   }
 
-  /**
-   * Appends '/blob/master/package.json' to the repository URL.
-   * Changes from 'github.com' to 'raw.githubusercontent.com'.
-   */
-  prepare(repositories: string[]) {
-    return repositories.map((repository) => {
-      repository = repository.replace(GITHUB, RAW_GITHUB);
-      return repository + PACKAGE_JSON;
-    });
-  }
-
-  async fetch(organization: string) {
+  async fetch(organization: string): Promise<string[]> {
     const repositories = await this.getRepositories(organization);
-    const rawRepositories = this.prepare(repositories);
-    rawRepositories.forEach(async (repository) => {
-      const status = await this.hasPackageJSON(repository);
-      if (status === 200) {
-        const result = await axios.get(repository);
-        // console.log(result.data);
-      }
-    });
+    const repositoriesPaths: string[] = repositories
+      .map((repo) => repo.html_url as string)
+      .map((repo) => repo.replace(GITHUB, RAW_GITHUB) + PACKAGE_JSON);
+
+    if (repositoriesPaths.length === 0) {
+      throw Error(`No repos found for the ${organization} organization!`);
+    }
+    // check if repositories have a package.json file
+    const packageMatrix = await Promise.all(
+      repositoriesPaths.map(async (repo) => await this.hasPackageJSON(repo))
+    );
+    // filter repositoriesPaths array
+    const result = repositoriesPaths.filter((_, index) => packageMatrix[index]);
+    return result;
   }
 }
 
