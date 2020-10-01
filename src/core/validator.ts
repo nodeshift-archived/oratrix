@@ -1,5 +1,3 @@
-import Table from 'cli-table3';
-import chalk from 'chalk';
 import FieldLoader from '../util/fieldLoader';
 import Differ from '../util/differ';
 import GithubFetcher from '../util/githubFetcher';
@@ -8,49 +6,25 @@ class Validator {
   fieldLoader = new FieldLoader();
   differ = new Differ();
 
-  async run(organization?: string): Promise<void> {
+  async run(organization?: string): Promise<string[]> {
     if (organization) {
-      this.runOrganizationCheck(organization);
+      return this.runOrganizationCheck(organization);
     } else {
-      this.runLocalCheck();
+      return this.runLocalCheck();
     }
   }
 
-  async runLocalCheck(): Promise<void> {
+  async runLocalCheck(): Promise<string[]> {
     const requiredFields = await this.fieldLoader.loadFields();
     const packageFields = await this.fieldLoader.loadFields('./package.json');
-    // get report from differ
     const report = this.differ.run(requiredFields, packageFields);
-
-    // print report
-    const table = new Table({
-      head: ['Fields', 'Status'],
-      style: {
-        head: ['yellow'],
-      },
-    });
-
-    Object.keys(requiredFields).forEach((field) => {
-      const status =
-        report.indexOf(field) === -1
-          ? chalk.bgGreen.white(' PASS ')
-          : chalk.bgRed.white(' MISSING ');
-
-      table.push([field, status]);
-    });
-
-    console.log(`${chalk.bold('Oratrix report')}\n`);
-    console.log(`${table.toString()}\n`);
-
-    if (report.length > 0) {
-      throw Error(`You have ${report.length} field(s) missing.`);
-    }
+    return report;
   }
 
-  async runOrganizationCheck(organization: string): Promise<void> {
+  async runOrganizationCheck(organization: string): Promise<string[]> {
     const ghFetcher = new GithubFetcher();
     const result = await ghFetcher.fetch(organization);
-    console.log(result);
+    return result;
   }
 }
 
