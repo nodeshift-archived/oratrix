@@ -49,6 +49,7 @@ class GithubFetcher {
   async fetch(organization: string): Promise<string[]> {
     const repositories = await this.getRepositories(organization);
     const repositoriesPaths: string[] = repositories
+      .filter((repo) => !repo.archived)
       .map((repo) => repo.html_url as string)
       .map((repo) => repo.replace(GITHUB, RAW_GITHUB) + PACKAGE_JSON);
 
