@@ -3,8 +3,9 @@
  * core/business layer.
  */
 import * as yargs from 'yargs';
-import Validator from '../core/validator';
 import chalk from 'chalk';
+
+import Validator, { Options } from '../core/validator';
 import Report from '../util/report';
 
 export const command = 'validate';
@@ -17,11 +18,23 @@ export const builder = {
     describe: 'GitHub organization oratrix will validate',
     default: null,
   },
+  config: {
+    alias: 'c',
+    describe: 'Custom file with the required package.json fields',
+    default: null,
+  },
 };
 
 export const handler = async (argv: yargs.Arguments): Promise<void> => {
   const validator = new Validator();
-  const result = await validator.run(argv.organization as string);
+  const validatorOptions: Options = {
+    config: argv.config as string,
+  };
+
+  const result = await validator.run(
+    argv.organization as string,
+    validatorOptions
+  );
 
   console.log(`${chalk.bold('Oratrix report')}\n`);
   // We need the required fields here:
@@ -30,5 +43,4 @@ export const handler = async (argv: yargs.Arguments): Promise<void> => {
   if (result.length > 0) {
     throw Error(`You have ${result.length} field(s) missing.`);
   }
-  
 };

@@ -10,14 +10,14 @@ axios.defaults.validateStatus = () => true;
 
 class FieldLoader {
   /**
-   * Loads the package.json required fields as a JS object (default ./fields.json)
+   * Loads the package.json required fields as a JS object (default ../config/fields.json)
    * @param customPath the path of the custom specified required fields (optional)
    * @returns the required fields as a JS object
    */
   async loadFields(customPath?: string): Promise<Record<string, unknown>> {
     const location = customPath
       ? path.join(process.cwd(), customPath)
-      : path.join(__dirname, 'fields.json');
+      : path.join(__dirname, '..', 'config', 'fields.json');
 
     const fieldsRaw = await fs.readFile(location, { encoding: 'utf-8' });
     const fields = JSON.parse(fieldsRaw);
