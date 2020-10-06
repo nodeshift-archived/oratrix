@@ -3,10 +3,8 @@
  * core/business layer.
  */
 import * as yargs from 'yargs';
-import chalk from 'chalk';
 
 import Validator, { Options } from '../core/validator';
-import Report from '../util/report';
 
 export const command = 'validate';
 
@@ -31,16 +29,9 @@ export const handler = async (argv: yargs.Arguments): Promise<void> => {
     config: argv.config as string,
   };
 
-  const result = await validator.run(
-    argv.organization as string,
-    validatorOptions
-  );
-
-  console.log(`${chalk.bold('Oratrix report')}\n`);
-  // We need the required fields here:
-  // console.log(`${Report.createValidatorReport(null, result)}\n`);
-
-  if (result.length > 0) {
-    throw Error(`You have ${result.length} field(s) missing.`);
+  try {
+    await validator.run(argv.organization as string, validatorOptions);
+  } catch (e) {
+    process.exit(1);
   }
 };
