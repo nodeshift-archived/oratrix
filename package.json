@@ -16,7 +16,7 @@
     "build"
   ],
   "engines": {
-    "node": ">=12"
+    "node": "^14 || ^12 || ^10"
   },
   "keywords": [],
   "author": "Red Hat, Inc.",
