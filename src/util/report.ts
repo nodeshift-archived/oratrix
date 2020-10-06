@@ -10,7 +10,10 @@ export default class Report {
    * @param tableData the data to be passed to cli-table3 to construct the report.
    * @param requiredFields The fields considered required to have in package.json
    */
-  static createValidatorReport(requiredFields: Record<string, unknown>, tableData: string[]): string {
+  static createValidatorReport(
+    requiredFields: string[],
+    tableData: string[]
+  ): string {
     // print report
     const table = new Table({
       head: ['Fields', 'Status'],
@@ -19,9 +22,9 @@ export default class Report {
       },
     });
 
-    Object.keys(requiredFields).forEach((field) => {
+    requiredFields.forEach((field) => {
       const status =
-      tableData.indexOf(field) === -1
+        tableData.indexOf(field) === -1
           ? chalk.bgGreen.white(' PASS ')
           : chalk.bgRed.white(' MISSING ');
 
@@ -29,12 +32,5 @@ export default class Report {
     });
 
     return table.toString();
-
-    // console.log(`${chalk.bold('Oratrix report')}\n`);
-    // console.log(`${table.toString()}\n`);
-
-    // if (tableData.length > 0) {
-    //   throw Error(`You have ${tableData.length} field(s) missing.`);
-    // }
   }
 }
