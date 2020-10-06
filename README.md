@@ -1,6 +1,7 @@
 # oratrix
 
 ![Node.js CI](https://github.com/nodeshift/oratrix/workflows/Node.js%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/nodeshift/oratrix/badge.svg?branch=coverage)](https://coveralls.io/github/nodeshift/oratrix?branch=coverage)
 
 > More information about the project's name [here](https://commons.wikimedia.org/wiki/File:Amazona_oratrix_1zz.jpg)
 
