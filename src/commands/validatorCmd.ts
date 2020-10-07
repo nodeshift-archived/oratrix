@@ -16,12 +16,17 @@ export const builder = {
   organization: {
     alias: 'o',
     describe: 'GitHub organization oratrix will validate',
-    default: null,
+    default: undefined,
   },
   config: {
     alias: 'c',
     describe: 'Custom file with the required package.json fields',
-    default: null,
+    default: undefined,
+  },
+  token: {
+    alias: 't',
+    describe: 'GitHub oauth token',
+    default: undefined,
   },
 };
 
@@ -29,12 +34,15 @@ export const handler = async (argv: yargs.Arguments): Promise<void> => {
   const validator = new Validator();
   const validatorOptions: Options = {
     config: argv.config as string,
+    token: (argv.token as string) || (process.env.GITHUB_TOKEN as string),
   };
+
+  console.log(validatorOptions);
 
   try {
     await validator.run(argv.organization as string, validatorOptions);
-  } catch (e) {
-    console.log('\n', logSymbols.error, chalk.red.bold(e.message), '\n');
+  } catch (err) {
+    console.log('\n', logSymbols.error, chalk.red.bold(err.message), '\n');
     process.exit(1);
   }
 };

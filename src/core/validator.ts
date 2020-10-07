@@ -6,6 +6,7 @@ import Report from '../util/report';
 
 export interface Options {
   config?: string;
+  token?: string;
 }
 
 class Validator {
@@ -44,7 +45,7 @@ class Validator {
     options: Options
   ): Promise<void> {
     const ghFetcher = new GithubFetcher();
-    const packagePaths = await ghFetcher.fetch(organization);
+    const packagePaths = await ghFetcher.fetch(organization, options);
     const requiredFields = await this.fieldLoader.loadFields(options.config);
 
     const packageData = await Promise.all(
