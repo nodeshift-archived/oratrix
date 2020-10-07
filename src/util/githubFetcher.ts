@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Options } from '../core/validator';
 
 type JSObject = Record<string, unknown>;
 
@@ -14,20 +15,37 @@ class GithubFetcher {
    * Gets all repositories from given github organization.
    * @param organization organization to look at.
    */
-  async getRepositories(organization: string): Promise<JSObject[]> {
+  async getRepositories(
+    organization: string,
+    options?: Options
+  ): Promise<JSObject[]> {
     const repositories: JSObject[] = [];
+    const axiosOptions = {
+      headers: {
+        Authorization: options?.token ? `token ${options.token}` : '',
+      },
+    };
     // collect all repositories from github
     let page = 1;
     let pageIsEmpty = false;
     while (!pageIsEmpty) {
-      const { data } = await axios.get(
-        `https://api.github.com/orgs/${organization}/repos?per_page=50&page=${page}`
+      const { data, status } = await axios.get(
+        `https://api.github.com/orgs/${organization}/repos?per_page=50&page=${page}`,
+        axiosOptions
       );
+
+      if (status !== 200 && status !== 404) {
+        throw new Error(
+          data.message || 'An error occurred when fetching from GitHub'
+        );
+      }
+
       // no more data to parse
       if (!Array.isArray(data) || data.length === 0) {
         pageIsEmpty = true;
         continue;
       }
+
       repositories.push(...(data as JSObject[]));
       page++;
     }
@@ -39,15 +57,23 @@ class GithubFetcher {
    * @param repository github repository to check
    * @returns boolean true if package.json exists, false otherwise.
    */
-  async hasPackageJSON(repository: string): Promise<boolean> {
+  async hasPackageJSON(
+    repository: string,
+    options?: Options
+  ): Promise<boolean> {
     if (!repository || !repository.trim()) {
       throw Error('Repository cannot be empty.');
     }
-    return (await axios.head(repository)).status === 200;
+    const axiosOptions = {
+      headers: {
+        Authorization: options?.token ? `token ${options.token}` : '',
+      },
+    };
+    return (await axios.head(repository, axiosOptions)).status === 200;
   }
 
-  async fetch(organization: string): Promise<string[]> {
-    const repositories = await this.getRepositories(organization);
+  async fetch(organization: string, options?: Options): Promise<string[]> {
+    const repositories = await this.getRepositories(organization, options);
     const repositoriesPaths: string[] = repositories
       .filter((repo) => !repo.archived)
       .map((repo) => repo.html_url as string)
@@ -58,7 +84,9 @@ class GithubFetcher {
     }
     // check if repositories have a package.json file
     const packageMatrix = await Promise.all(
-      repositoriesPaths.map(async (repo) => await this.hasPackageJSON(repo))
+      repositoriesPaths.map(
+        async (repo) => await this.hasPackageJSON(repo, options)
+      )
     );
     // filter repositoriesPaths array
     const result = repositoriesPaths.filter((_, index) => packageMatrix[index]);
