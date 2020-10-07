@@ -2,6 +2,8 @@
  * This is an 'extracted' yargs command that communicates with
  * core/business layer.
  */
+import chalk from 'chalk';
+import logSymbols from 'log-symbols';
 import * as yargs from 'yargs';
 
 import Validator, { Options } from '../core/validator';
@@ -32,6 +34,7 @@ export const handler = async (argv: yargs.Arguments): Promise<void> => {
   try {
     await validator.run(argv.organization as string, validatorOptions);
   } catch (e) {
+    console.log('\n', logSymbols.error, chalk.red.bold(e.message), '\n');
     process.exit(1);
   }
 };

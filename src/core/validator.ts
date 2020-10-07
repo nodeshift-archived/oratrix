@@ -32,7 +32,7 @@ class Validator {
       report
     );
 
-    console.log(`${output}\n`);
+    console.log(`${output}`);
 
     if (report.length > 0) {
       throw new Error(`You have ${report.length} field(s) missing`);
@@ -44,8 +44,38 @@ class Validator {
     options: Options
   ): Promise<void> {
     const ghFetcher = new GithubFetcher();
-    const result = await ghFetcher.fetch(organization);
-    console.log(result);
+    const packagePaths = await ghFetcher.fetch(organization);
+    const requiredFields = await this.fieldLoader.loadFields(options.config);
+
+    const packageData = await Promise.all(
+      packagePaths.map(
+        async (path) => await this.fieldLoader.loadFieldsFromURL(path)
+      )
+    );
+
+    console.log(`\n${chalk.bold('Oratrix report')}`);
+    let errorCount = 0;
+
+    packageData.forEach((repoPackage, index) => {
+      const repoName = packagePaths[index]
+        .replace(`https://raw.githubusercontent.com/`, '')
+        .replace('/master/package.json', '');
+
+      console.log(`\n|== ${chalk.cyan.bold(repoName)} ==|\n`);
+      const report = this.differ.run(requiredFields, repoPackage);
+
+      const output = Report.createValidatorReport(
+        Object.keys(requiredFields),
+        report
+      );
+
+      console.log(`${output}`);
+      if (report.length > 0) errorCount++;
+    });
+
+    if (errorCount > 0) {
+      throw new Error(`Found inconsistencies in ${errorCount} repo(s)`);
+    }
   }
 }
 
