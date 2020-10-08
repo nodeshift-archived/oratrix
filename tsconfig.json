@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "outDir": "./build",
+    "outDir": "./dist",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "strict": true,
@@ -10,12 +10,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*.ts", "decs.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
-
