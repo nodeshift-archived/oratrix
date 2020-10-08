@@ -3,14 +3,14 @@ import Report from '../../src/util/report';
 import FieldLoader from '../../src/util/fieldLoader';
 
 const fieldLoader = new FieldLoader();
-let requiredFields: Record<string, unknown>;
+let requiredFields: string[];
 
 before(async () => {
-  requiredFields = await fieldLoader.loadFields();
+  requiredFields = Object.keys(await fieldLoader.loadFields());
 });
 
-describe('A Report', () => {
-  it('Should create report for validator command', () => {
+describe('Report', () => {
+  it('should create report for validator command', () => {
     const tableDataTest = ['test'];
     const result = Report.createValidatorReport(requiredFields, tableDataTest);
     assert.ok(result.includes('Fields'));
@@ -23,5 +23,4 @@ describe('A Report', () => {
     assert.ok(result.includes('dependencies'));
     assert.ok(result.includes('devDependencies'));
   });
-
 });
