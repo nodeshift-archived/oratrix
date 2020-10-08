@@ -37,8 +37,6 @@ export const handler = async (argv: yargs.Arguments): Promise<void> => {
     token: (argv.token as string) || (process.env.GITHUB_TOKEN as string),
   };
 
-  console.log(validatorOptions);
-
   try {
     await validator.run(argv.organization as string, validatorOptions);
   } catch (err) {
