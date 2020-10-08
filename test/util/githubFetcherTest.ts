@@ -2,8 +2,8 @@ import * as assert from 'assert';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
-describe('Testing GitHub Fetcher', () => {
-  it('Should throw an error if no repository is specified - hasPackageJSON method', async () => {
+describe('GitHub Fetcher', () => {
+  it('should throw an error if no repository is specified - hasPackageJSON method', async () => {
     const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
       axios: {
         head: () => Promise.resolve(),
@@ -21,6 +21,7 @@ describe('Testing GitHub Fetcher', () => {
   it('should return package.json paths of valid repositories', async () => {
     const axiosGetStub = sinon.stub();
     axiosGetStub.onCall(0).resolves({
+      status: 200,
       data: [
         {
           name: 'opossum',
@@ -35,6 +36,7 @@ describe('Testing GitHub Fetcher', () => {
       ],
     });
     axiosGetStub.onCall(1).resolves({
+      status: 200,
       data: [
         {
           name: 'node-rpm',
@@ -49,6 +51,7 @@ describe('Testing GitHub Fetcher', () => {
       ],
     });
     axiosGetStub.onCall(2).resolves({
+      status: 200,
       data: [],
     });
 
@@ -78,10 +81,30 @@ describe('Testing GitHub Fetcher', () => {
     assert.deepStrictEqual(result, expected);
   });
 
-  it('Should throw error if no repos found in the organization', async () => {
+  it('should throw error if no repos found in the organization', async () => {
     const axiosGetStub = sinon.stub();
     axiosGetStub.onCall(0).resolves({
       data: [],
+    });
+
+    const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
+      axios: { get: axiosGetStub },
+    }).default;
+
+    const githubFetcher = new GithubFetcher();
+
+    try {
+      await githubFetcher.fetch('https://github.com/nodeshift/nodeshift');
+      assert.ok(false);
+    } catch (err) {
+      assert.ok(true);
+    }
+  });
+
+  it('should throw an error if the organization does not exists', async () => {
+    const axiosGetStub = sinon.stub();
+    axiosGetStub.onCall(0).resolves({
+      status: 404,
     });
 
     const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
