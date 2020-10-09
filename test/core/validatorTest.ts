@@ -56,4 +56,31 @@ describe(`Validator`, () => {
       assert.ok(true);
     }
   });
+
+  it('should call the runLocalCheck method', async () => {
+    const validator = new Validator();
+    const runLocalCheckMock = sinon.stub(validator, 'runLocalCheck');
+    const runOrgCheckMock = sinon.stub(validator, 'runOrganizationCheck');
+
+    runLocalCheckMock.resolves();
+    runOrgCheckMock.resolves();
+
+    await validator.run();
+    assert.ok(runLocalCheckMock.called);
+    assert.ok(!runOrgCheckMock.called);
+  });
+
+  it('should call the runOrganizationCheck method', async () => {
+    const validator = new Validator();
+    const runLocalCheckMock = sinon.stub(validator, 'runLocalCheck');
+    const runOrgCheckMock = sinon.stub(validator, 'runOrganizationCheck');
+
+    runLocalCheckMock.resolves();
+    runOrgCheckMock.resolves();
+
+    await validator.run('nodeshift');
+    assert.ok(!runLocalCheckMock.called);
+    assert.ok(runOrgCheckMock.called);
+    assert.ok(runOrgCheckMock.calledWith('nodeshift'));
+  });
 });
