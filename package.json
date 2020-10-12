@@ -1,7 +1,7 @@
 {
   "name": "oratrix",
   "version": "0.0.1",
-  "description": "",
+  "description": "CLI application for checking package.json consistency across repositories.",
   "main": "dist/cli.js",
   "bin": {
     "oratrix": "dist/cli.js"
