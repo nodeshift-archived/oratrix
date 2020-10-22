@@ -1,8 +1,7 @@
 import * as assert from 'assert';
-import Report from '../../src/util/report';
-import FieldLoader from '../../src/util/fieldLoader';
+import report from '../../src/util/report';
+import fieldLoader from '../../src/util/fieldLoader';
 
-const fieldLoader = new FieldLoader();
 let requiredFields: string[];
 
 before(async () => {
@@ -12,7 +11,7 @@ before(async () => {
 describe('Report', () => {
   it('should create report for validator command', () => {
     const tableDataTest = ['test'];
-    const result = Report.createValidatorReport(requiredFields, tableDataTest);
+    const result = report.createValidatorReport(requiredFields, tableDataTest);
     assert.ok(result.includes('Fields'));
     assert.ok(result.includes('Status'));
     assert.ok(result.includes('name'));
