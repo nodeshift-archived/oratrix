@@ -6,10 +6,10 @@ import chalk from 'chalk';
  * @param tableData the data to be passed to cli-table3 to construct the report.
  * @param requiredFields The fields considered required to have in package.json
  */
-export const createValidatorReport = (
+function createValidatorReport(
   requiredFields: string[],
   tableData: string[]
-): string => {
+): string {
   // print report
   const table = new Table({
     head: ['Fields', 'Status'],
@@ -28,4 +28,8 @@ export const createValidatorReport = (
   });
 
   return table.toString();
+}
+
+export default {
+  createValidatorReport,
 };

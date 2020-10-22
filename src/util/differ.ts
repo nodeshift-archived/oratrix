@@ -1,17 +1,14 @@
 type ObjectJSON = Record<string, unknown>;
 type Field = string | number | ObjectJSON;
 
-const isEmpty = (value: Field): boolean => {
+function isEmpty(value: Field): boolean {
   if (value) {
     return value === '';
   }
   return true;
-};
+}
 
-export const run = (
-  requiredFields: ObjectJSON,
-  packageFields: ObjectJSON
-): string[] => {
+function run(requiredFields: ObjectJSON, packageFields: ObjectJSON): string[] {
   // transform object to array
   const requiredFieldsArray = Object.keys(requiredFields);
   // get missing fields
@@ -22,4 +19,8 @@ export const run = (
   });
   // return result
   return diff;
+}
+
+export default {
+  run,
 };

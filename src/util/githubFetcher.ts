@@ -14,10 +14,10 @@ const RAW_GITHUB = 'raw.githubusercontent.com';
  * Gets all repositories from given github organization.
  * @param organization organization to look at.
  */
-const getRepositories = async (
+async function getRepositories(
   organization: string,
   options?: Options
-): Promise<JSObject[]> => {
+): Promise<JSObject[]> {
   const repositories: JSObject[] = [];
   const axiosOptions = {
     headers: {
@@ -49,17 +49,17 @@ const getRepositories = async (
     page++;
   }
   return repositories;
-};
+}
 
 /**
  * Checks if the given repository has a package.json file.
  * @param repository github repository to check
  * @returns boolean true if package.json exists, false otherwise.
  */
-const hasPackageJSON = async (
+async function hasPackageJSON(
   repository: string,
   options?: Options
-): Promise<boolean> => {
+): Promise<boolean> {
   if (!repository || !repository.trim()) {
     throw Error('Repository cannot be empty.');
   }
@@ -69,12 +69,12 @@ const hasPackageJSON = async (
     },
   };
   return (await axios.head(repository, axiosOptions)).status === 200;
-};
+}
 
-export const fetch = async (
+async function fetch(
   organization: string,
   options?: Options
-): Promise<string[]> => {
+): Promise<string[]> {
   const repositories = await getRepositories(organization, options);
   const repositoriesPaths: string[] = repositories
     .filter((repo) => !repo.archived)
@@ -91,4 +91,8 @@ export const fetch = async (
   // filter repositoriesPaths array
   const result = repositoriesPaths.filter((_, index) => packageMatrix[index]);
   return result;
+}
+
+export default {
+  fetch,
 };
