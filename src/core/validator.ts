@@ -1,83 +1,72 @@
 import chalk from 'chalk';
-import FieldLoader from '../util/fieldLoader';
-import Differ from '../util/differ';
-import GithubFetcher from '../util/githubFetcher';
-import Report from '../util/report';
+import * as fieldLoader from '../util/fieldLoader';
+import * as differ from '../util/differ';
+import * as ghFetcher from '../util/githubFetcher';
+import { createValidatorReport } from '../util/report';
 
 export interface Options {
   config?: string;
   token?: string;
 }
 
-class Validator {
-  fieldLoader = new FieldLoader();
-  differ = new Differ();
+const runLocalCheck = async (options: Options): Promise<void> => {
+  const requiredFields = await fieldLoader.loadFields(options.config);
+  const packageFields = await fieldLoader.loadFields('./package.json');
+  const report = differ.run(requiredFields, packageFields);
 
-  async run(organization?: string, options: Options = {}): Promise<void> {
-    if (organization) {
-      await this.runOrganizationCheck(organization, options);
-    } else {
-      await this.runLocalCheck(options);
-    }
+  console.log(`\n${chalk.bold('Oratrix report')}\n`);
+
+  const output = createValidatorReport(Object.keys(requiredFields), report);
+
+  console.log(`${output}`);
+
+  if (report.length > 0) {
+    throw new Error(`You have ${report.length} field(s) missing`);
   }
+};
 
-  async runLocalCheck(options: Options): Promise<void> {
-    const requiredFields = await this.fieldLoader.loadFields(options.config);
-    const packageFields = await this.fieldLoader.loadFields('./package.json');
-    const report = this.differ.run(requiredFields, packageFields);
+const runOrganizationCheck = async (
+  organization: string,
+  options: Options
+): Promise<void> => {
+  const packagePaths = await ghFetcher.fetch(organization, options);
+  const requiredFields = await fieldLoader.loadFields(options.config);
 
-    console.log(`\n${chalk.bold('Oratrix report')}\n`);
+  const packageData = await Promise.all(
+    packagePaths.map(
+      async (path: string) => await fieldLoader.loadFieldsFromURL(path)
+    )
+  );
 
-    const output = Report.createValidatorReport(
-      Object.keys(requiredFields),
-      report
-    );
+  console.log(`\n${chalk.bold('Oratrix report')}`);
+  let errorCount = 0;
+
+  packageData.forEach((repoPackage, index) => {
+    const repoName = packagePaths[index]
+      .replace(`https://raw.githubusercontent.com/`, '')
+      .replace('/master/package.json', '');
+
+    console.log(`\n|== ${chalk.cyan.bold(repoName)} ==|\n`);
+    const report = differ.run(requiredFields, repoPackage);
+
+    const output = createValidatorReport(Object.keys(requiredFields), report);
 
     console.log(`${output}`);
+    if (report.length > 0) errorCount++;
+  });
 
-    if (report.length > 0) {
-      throw new Error(`You have ${report.length} field(s) missing`);
-    }
+  if (errorCount > 0) {
+    throw new Error(`Found inconsistencies in ${errorCount} repo(s)`);
   }
+};
 
-  async runOrganizationCheck(
-    organization: string,
-    options: Options
-  ): Promise<void> {
-    const ghFetcher = new GithubFetcher();
-    const packagePaths = await ghFetcher.fetch(organization, options);
-    const requiredFields = await this.fieldLoader.loadFields(options.config);
-
-    const packageData = await Promise.all(
-      packagePaths.map(
-        async (path) => await this.fieldLoader.loadFieldsFromURL(path)
-      )
-    );
-
-    console.log(`\n${chalk.bold('Oratrix report')}`);
-    let errorCount = 0;
-
-    packageData.forEach((repoPackage, index) => {
-      const repoName = packagePaths[index]
-        .replace(`https://raw.githubusercontent.com/`, '')
-        .replace('/master/package.json', '');
-
-      console.log(`\n|== ${chalk.cyan.bold(repoName)} ==|\n`);
-      const report = this.differ.run(requiredFields, repoPackage);
-
-      const output = Report.createValidatorReport(
-        Object.keys(requiredFields),
-        report
-      );
-
-      console.log(`${output}`);
-      if (report.length > 0) errorCount++;
-    });
-
-    if (errorCount > 0) {
-      throw new Error(`Found inconsistencies in ${errorCount} repo(s)`);
-    }
+export const run = async (
+  organization?: string,
+  options: Options = {}
+): Promise<void> => {
+  if (organization) {
+    await runOrganizationCheck(organization, options);
+  } else {
+    await runLocalCheck(options);
   }
-}
-
-export default Validator;
+};
