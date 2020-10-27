@@ -2,10 +2,7 @@ type ObjectJSON = Record<string, unknown>;
 type Field = string | number | ObjectJSON;
 
 function isEmpty(value: Field): boolean {
-  if (value) {
-    return value === '';
-  }
-  return true;
+  return !value || value === '';
 }
 
 function run(requiredFields: ObjectJSON, packageFields: ObjectJSON): string[] {

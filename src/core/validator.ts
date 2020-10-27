@@ -57,7 +57,7 @@ async function runOrganizationCheck(
       reportData
     );
 
-    console.log(`${output}`);
+    console.log(output);
     if (reportData.length > 0) errorCount++;
   });
 
