@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import logSymbols from 'log-symbols';
 import * as yargs from 'yargs';
 
-import Validator, { Options } from '../core/validator';
+import validator, { Options } from '../core/validator';
 
 export const command = 'validate';
 
@@ -31,7 +31,6 @@ export const builder = {
 };
 
 export const handler = async (argv: yargs.Arguments): Promise<void> => {
-  const validator = new Validator();
   const validatorOptions: Options = {
     config: argv.config as string,
     token: (argv.token as string) || (process.env.GITHUB_TOKEN as string),

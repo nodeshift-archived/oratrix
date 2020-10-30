@@ -4,14 +4,13 @@ import sinon from 'sinon';
 
 describe('GitHub Fetcher', () => {
   it('should throw an error if no repository is specified - hasPackageJSON method', async () => {
-    const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
+    const ghFetcher = proxyquire('../../src/util/githubFetcher', {
       axios: {
         head: () => Promise.resolve(),
       },
     }).default;
-    const githubFetcher = new GithubFetcher();
     try {
-      await githubFetcher.hasPackageJSON();
+      await ghFetcher.hasPackageJSON();
       assert.ok(false);
     } catch (err) {
       assert.ok(true);
@@ -60,16 +59,14 @@ describe('GitHub Fetcher', () => {
     axiosHeadStub.onCall(1).resolves({ status: 200 });
     axiosHeadStub.onCall(2).resolves({ status: 404 });
 
-    const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
+    const ghFetcher = proxyquire('../../src/util/githubFetcher', {
       axios: {
         get: axiosGetStub,
         head: axiosHeadStub,
       },
     }).default;
 
-    const githubFetcher = new GithubFetcher();
-
-    const result = await githubFetcher.fetch(
+    const result = await ghFetcher.fetch(
       'https://github.com/nodeshift/nodeshift'
     );
 
@@ -87,14 +84,12 @@ describe('GitHub Fetcher', () => {
       data: [],
     });
 
-    const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
+    const ghFetcher = proxyquire('../../src/util/githubFetcher', {
       axios: { get: axiosGetStub },
     }).default;
 
-    const githubFetcher = new GithubFetcher();
-
     try {
-      await githubFetcher.fetch('https://github.com/nodeshift/nodeshift');
+      await ghFetcher.fetch('https://github.com/nodeshift/nodeshift');
       assert.ok(false);
     } catch (err) {
       assert.ok(true);
@@ -107,14 +102,12 @@ describe('GitHub Fetcher', () => {
       status: 404,
     });
 
-    const GithubFetcher = proxyquire('../../src/util/githubFetcher', {
+    const ghFetcher = proxyquire('../../src/util/githubFetcher', {
       axios: { get: axiosGetStub },
     }).default;
 
-    const githubFetcher = new GithubFetcher();
-
     try {
-      await githubFetcher.fetch('https://github.com/nodeshift/nodeshift');
+      await ghFetcher.fetch('https://github.com/nodeshift/nodeshift');
       assert.ok(false);
     } catch (err) {
       assert.ok(true);

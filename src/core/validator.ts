@@ -1,83 +1,82 @@
 import chalk from 'chalk';
-import FieldLoader from '../util/fieldLoader';
-import Differ from '../util/differ';
-import GithubFetcher from '../util/githubFetcher';
-import Report from '../util/report';
+import fieldLoader from '../util/fieldLoader';
+import differ from '../util/differ';
+import ghFetcher from '../util/githubFetcher';
+import report from '../util/report';
 
 export interface Options {
   config?: string;
   token?: string;
 }
 
-class Validator {
-  fieldLoader = new FieldLoader();
-  differ = new Differ();
+async function runLocalCheck(options: Options): Promise<void> {
+  const requiredFields = await fieldLoader.loadFields(options.config);
+  const packageFields = await fieldLoader.loadFields('./package.json');
+  const reportData = differ.run(requiredFields, packageFields);
 
-  async run(organization?: string, options: Options = {}): Promise<void> {
-    if (organization) {
-      await this.runOrganizationCheck(organization, options);
-    } else {
-      await this.runLocalCheck(options);
-    }
-  }
+  console.log(`\n${chalk.bold('Oratrix report')}\n`);
 
-  async runLocalCheck(options: Options): Promise<void> {
-    const requiredFields = await this.fieldLoader.loadFields(options.config);
-    const packageFields = await this.fieldLoader.loadFields('./package.json');
-    const report = this.differ.run(requiredFields, packageFields);
+  const output = report.createValidatorReport(
+    Object.keys(requiredFields),
+    reportData
+  );
 
-    console.log(`\n${chalk.bold('Oratrix report')}\n`);
+  console.log(`${output}`);
 
-    const output = Report.createValidatorReport(
-      Object.keys(requiredFields),
-      report
-    );
-
-    console.log(`${output}`);
-
-    if (report.length > 0) {
-      throw new Error(`You have ${report.length} field(s) missing`);
-    }
-  }
-
-  async runOrganizationCheck(
-    organization: string,
-    options: Options
-  ): Promise<void> {
-    const ghFetcher = new GithubFetcher();
-    const packagePaths = await ghFetcher.fetch(organization, options);
-    const requiredFields = await this.fieldLoader.loadFields(options.config);
-
-    const packageData = await Promise.all(
-      packagePaths.map(
-        async (path) => await this.fieldLoader.loadFieldsFromURL(path)
-      )
-    );
-
-    console.log(`\n${chalk.bold('Oratrix report')}`);
-    let errorCount = 0;
-
-    packageData.forEach((repoPackage, index) => {
-      const repoName = packagePaths[index]
-        .replace(`https://raw.githubusercontent.com/`, '')
-        .replace('/master/package.json', '');
-
-      console.log(`\n|== ${chalk.cyan.bold(repoName)} ==|\n`);
-      const report = this.differ.run(requiredFields, repoPackage);
-
-      const output = Report.createValidatorReport(
-        Object.keys(requiredFields),
-        report
-      );
-
-      console.log(`${output}`);
-      if (report.length > 0) errorCount++;
-    });
-
-    if (errorCount > 0) {
-      throw new Error(`Found inconsistencies in ${errorCount} repo(s)`);
-    }
+  if (reportData.length > 0) {
+    throw new Error(`You have ${reportData.length} field(s) missing`);
   }
 }
 
-export default Validator;
+async function runOrganizationCheck(
+  organization: string,
+  options: Options
+): Promise<void> {
+  const packagePaths = await ghFetcher.fetch(organization, options);
+  const requiredFields = await fieldLoader.loadFields(options.config);
+
+  const packageData = await Promise.all(
+    packagePaths.map(
+      async (path: string) => await fieldLoader.loadFieldsFromURL(path)
+    )
+  );
+
+  console.log(`\n${chalk.bold('Oratrix report')}`);
+  let errorCount = 0;
+
+  packageData.forEach((repoPackage, index) => {
+    const repoName = packagePaths[index]
+      .replace(`https://raw.githubusercontent.com/`, '')
+      .replace('/master/package.json', '');
+
+    console.log(`\n|== ${chalk.cyan.bold(repoName)} ==|\n`);
+    const reportData = differ.run(requiredFields, repoPackage);
+
+    const output = report.createValidatorReport(
+      Object.keys(requiredFields),
+      reportData
+    );
+
+    console.log(output);
+    if (reportData.length > 0) errorCount++;
+  });
+
+  if (errorCount > 0) {
+    throw new Error(`Found inconsistencies in ${errorCount} repo(s)`);
+  }
+}
+
+async function run(
+  organization?: string,
+  options: Options = {}
+): Promise<void> {
+  if (organization) {
+    await runOrganizationCheck(organization, options);
+  } else {
+    await runLocalCheck(options);
+  }
+}
+
+export default {
+  run,
+};
