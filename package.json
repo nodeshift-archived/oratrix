@@ -12,6 +12,7 @@
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
     "prepare": "npm run build",
+    "pretest": "npm run lint",
     "test": "TS_NODE_FILES=true nyc mocha -r ts-node/register test/**/*.ts",
     "lint": "eslint . --ext .ts"
   },
