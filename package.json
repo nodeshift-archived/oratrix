@@ -58,9 +58,11 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "@types/js-beautify": "^1.13.1",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",
     "cli-table3": "^0.6.0",
+    "js-beautify": "^1.13.0",
     "log-symbols": "^4.0.0",
     "prompts": "^2.4.0",
     "yargs": "^16.0.1"
