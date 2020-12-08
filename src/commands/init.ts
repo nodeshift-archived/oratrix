@@ -9,8 +9,8 @@ export const builder = {};
 
 export const handler = (): void => {
   // get full path
-  const filepath = path.resolve('.oratrixrc.json');
-  const exists = fs.existsSync(filepath);
+  const configPath = path.resolve('.oratrixrc.json');
+  const exists = fs.existsSync(configPath);
   // check if a oratrix config file already exists
   if (exists) {
     console.log('❗️ config file already exists in your directory.');
@@ -24,7 +24,7 @@ export const handler = (): void => {
     packages: [],
   };
 
-  fs.writeFileSync(filepath, JSON.stringify(initConfig, null, 2), {
+  fs.writeFileSync(configPath, JSON.stringify(initConfig, null, 2), {
     encoding: 'utf-8',
   });
   console.log('✨ config file successfully initialized.');
