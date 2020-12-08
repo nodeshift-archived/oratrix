@@ -25,7 +25,7 @@ export const handler = (): void => {
   const config = JSON.parse(configJSON);
 
   // phase-1: check for deprecated packages
-  const deprecated: Array<string> = [];
+  const deprecated: string[] = [];
 
   config.packages.forEach((pkg: any) => {
     // get package info from NPM
@@ -43,10 +43,48 @@ export const handler = (): void => {
     console.log('🎉 No deprecated packages found.');
   } else {
     // format deprecated array as string
-    const output = deprecated.reduce(
-      (prev: string, curr: string) => `${prev} ${chalk.bold.red(curr)}`,
-      ''
-    );
-    console.log(`❗️ The following packages are deprecated: ${output.trim()}`);
+    const output = deprecated.map((elem) => chalk.bold.red(elem)).join(' ');
+    console.log(`❗️ The following packages are deprecated: ${output}`);
+  }
+
+  // phase-2: check for required package.json fields
+  const missingResults: Record<string, string[]> = {};
+  // util function - TO BE REMOVED
+  const isEmpty = (value: any) => {
+    return !value || value === '';
+  };
+
+  config.packages.forEach((pkg: any) => {
+    // get package info from NPM
+    const packageInfoJSON = execSync(`npm show ${pkg.name} --json`, {
+      encoding: 'utf-8',
+    });
+    const packageInfo = JSON.parse(packageInfoJSON);
+
+    // get missing package fields
+    const missingFields: string[] = config.required.filter((field: string) => {
+      const exists = Object.hasOwnProperty.call(packageInfo, field);
+      const empty = isEmpty(packageInfo[field]);
+      return !exists || empty;
+    });
+
+    if (missingFields.length !== 0) {
+      missingResults[pkg.name] = missingFields;
+    }
+  });
+
+  if (Object.keys(missingResults).length === 0) {
+    console.log('🎉 All packages contain the required fields.');
+  } else {
+    console.log('❗️ Some packages missing required fields.');
+    Object.keys(missingResults).forEach((packageName) => {
+      // format missing fields
+      const star = chalk.yellow('*');
+      const name = chalk.bold.green(packageName);
+      const missing = missingResults[packageName]
+        .map((elem) => chalk.bold.red(elem))
+        .join(' ');
+      console.log(`   ${star} package ${name} is missing: ${missing}`);
+    });
   }
 };

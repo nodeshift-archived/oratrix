@@ -47,7 +47,8 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
   );
 
   if (packageExists) {
-    console.log(`❗️ Package '${packageName}' already exists in the config.`);
+    const name = chalk.bold.green(packageName);
+    console.log(`❗️ Package ${name} already exists in the config.`);
     return;
   }
 
@@ -72,7 +73,7 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
   // insert package to config
   config.packages.push(packageData);
   console.log(
-    `✅ Adding new package ${chalk.bold.green(packageName)} to config.`
+    `📦 Adding new package ${chalk.bold.green(packageName)} to config.`
   );
 
   // save updated config to disk
