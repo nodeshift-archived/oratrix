@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
+import chalk from 'chalk';
 import * as yargs from 'yargs';
 
 export const command = 'add <package>';
@@ -29,9 +30,9 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
     fs.writeFileSync(configPath, JSON.stringify(initConfig, null, 2), {
       encoding: 'utf-8',
     });
-    console.log('✨ config file successfully initialized.');
+    console.log('✨ Config file successfully initialized.');
   } else {
-    console.log('✅ oratrix config found.');
+    console.log('✅ Oratrix config found.');
   }
 
   // load config from disk
@@ -46,7 +47,7 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
   );
 
   if (packageExists) {
-    console.log(`❗️ package '${packageName}' already exists in the config.`);
+    console.log(`❗️ Package '${packageName}' already exists in the config.`);
     return;
   }
 
@@ -70,11 +71,13 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
 
   // insert package to config
   config.packages.push(packageData);
-  console.log(`✅ adding new package '${packageName}' to config.`);
+  console.log(
+    `✅ Adding new package ${chalk.bold.green(packageName)} to config.`
+  );
 
   // save updated config to disk
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2), {
     encoding: 'utf-8',
   });
-  console.log('🎉 updating config successfully.');
+  console.log('🎉 Updating config successfully.');
 };
