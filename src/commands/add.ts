@@ -40,6 +40,16 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
 
   const packageName = args.package;
 
+  // check if package already exists in the config
+  const packageExists = config.packages.find(
+    (element: any) => element.name === packageName
+  );
+
+  if (packageExists) {
+    console.log(`❗️ package '${packageName}' already exists in the config.`);
+    return;
+  }
+
   const { category } = await prompts({
     type: 'text',
     name: 'category',
