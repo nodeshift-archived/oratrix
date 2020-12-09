@@ -79,12 +79,12 @@ export const handler = (): void => {
     console.log('❗️ Some packages missing required fields.');
     Object.keys(missingResults).forEach((packageName) => {
       // format missing fields
-      const star = chalk.yellow('*');
+      const arrow = chalk.yellow('▶');
       const name = chalk.bold.green(packageName);
       const missing = missingResults[packageName]
         .map((elem) => chalk.bold.red(elem))
         .join(' ');
-      console.log(`   ${star} package ${name} is missing: ${missing}`);
+      console.log(`   ${arrow} package ${name} is missing: ${missing}`);
     });
   }
 };
