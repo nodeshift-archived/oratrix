@@ -14,7 +14,7 @@ export const handler = (): void => {
   const configExists = fs.existsSync(configPath);
   // check if config file exists
   if (!configExists) {
-    console.log('❗️ No oratrix config found in the current directory.');
+    console.log('🚫 No oratrix config found in the current directory.');
     process.exit(1);
   }
 
@@ -44,7 +44,7 @@ export const handler = (): void => {
   } else {
     // format deprecated array as string
     const output = deprecated.map((elem) => chalk.bold.red(elem)).join(' ');
-    console.log(`❗️ The following packages are deprecated: ${output}`);
+    console.log(`🚫 The following packages are deprecated: ${output}`);
   }
 
   // phase-2: check for required package.json fields
@@ -74,13 +74,13 @@ export const handler = (): void => {
   });
 
   if (Object.keys(missingResults).length === 0) {
-    console.log('🎉 All packages contain the required fields.');
+    console.log('🎉 All packages contain required fields.');
   } else {
-    console.log('❗️ Some packages missing required fields.');
+    console.log('🚫 Some packages missing required fields.');
     Object.keys(missingResults).forEach((packageName) => {
       // format missing fields
       const arrow = chalk.yellow('▶');
-      const name = chalk.bold.green(packageName);
+      const name = chalk.bold.yellow(packageName);
       const missing = missingResults[packageName]
         .map((elem) => chalk.bold.red(elem))
         .join(' ');

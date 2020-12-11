@@ -48,7 +48,7 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
 
   if (packageExists) {
     const name = chalk.bold.green(packageName);
-    console.log(`❗️ Package ${name} already exists in the config.`);
+    console.log(`🚫 Package ${name} already exists in the config.`);
     return;
   }
 

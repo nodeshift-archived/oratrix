@@ -13,7 +13,7 @@ export const handler = (): void => {
   const exists = fs.existsSync(configPath);
   // check if a oratrix config file already exists
   if (exists) {
-    console.log('❗️ Config file already exists in your directory.');
+    console.log('🚫 Config file already exists in your directory.');
     return;
   }
   // config contents as js-object
