@@ -27,7 +27,7 @@ export const handler = async (args: yargs.Arguments): Promise<void> => {
       allowed: {},
       packages: [],
     };
-    fs.writeFileSync(configPath, JSON.stringify(initConfig, null, 2), {
+    fs.writeFileSync(configPath, JSON.stringify(initConfig, null, 4), {
       encoding: 'utf-8',
     });
     console.log('✨ Config file successfully initialized.');

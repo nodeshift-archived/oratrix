@@ -87,4 +87,52 @@ export const handler = (): void => {
       console.log(`   ${arrow} package ${name} is missing: ${missing}`);
     });
   }
+
+  // phase-3 check allowed values on package fields
+  const groups: any = {};
+
+  config.packages.forEach((pkg: any) => {
+    // get package info from NPM
+    const packageInfoJSON = execSync(`npm show ${pkg.name} --json`, {
+      encoding: 'utf-8',
+    });
+    const packageInfo = JSON.parse(packageInfoJSON);
+
+    // init package check state
+    const nonAllowed: any = {};
+
+    Object.keys(config.allowed).forEach((field) => {
+      // search for field value in the allowed group
+      const search = config.allowed[field].indexOf(packageInfo[field]);
+      // if no results add group to local field group
+      if (search === -1 && packageInfo[field]) {
+        nonAllowed[field] = packageInfo[field];
+      }
+    });
+
+    // check if we have non-allowed fields
+    if (Object.keys(nonAllowed).length > 0) {
+      groups[pkg.name] = nonAllowed;
+    }
+  });
+
+  // format output
+  if (Object.keys(groups).length === 0) {
+    console.log(`🎉 All packages fields include allowed values.`);
+  } else {
+    console.log('🚫 Some packages include non-allowed field values.');
+    Object.entries(groups).forEach(([pkg, fields]) => {
+      const arrow = chalk.yellow('▶');
+      const name = chalk.yellow.bold(pkg);
+      // iterate through missing fields
+      Object.entries(fields as any[]).forEach(([field, value]) => {
+        // build output format
+        const fld = chalk.yellow.bold(field);
+        const val = chalk.red.bold(value);
+        console.log(
+          `   ${arrow} package ${name} includes non-allowed ${fld}: ${val}`
+        );
+      });
+    });
+  }
 };
