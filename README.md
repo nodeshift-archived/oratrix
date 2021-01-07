@@ -50,6 +50,10 @@ Custom json file with the required package.json fields.
 
 GitHub organization oratrix will validate
 
+**repo**
+
+GitHub repository oratrix will validate
+
 **token**
 
 GitHub's oAuth token oratrix will use when contacting GitHub's API
