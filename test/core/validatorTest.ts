@@ -93,9 +93,15 @@ describe(`Validator`, () => {
     validator.__set__('runLocalCheck', runLocalCheckMock);
     validator.__set__('runOrganizationCheck', runOrgCheckMock);
 
-    await validator.default.run('nodeshift');
+    await validator.default.run({
+      organization: 'nodeshift',
+    });
     assert.ok(!runLocalCheckMock.called);
     assert.ok(runOrgCheckMock.called);
-    assert.ok(runOrgCheckMock.calledWith('nodeshift'));
+    assert.ok(
+      runOrgCheckMock.calledWith({
+        organization: 'nodeshift',
+      })
+    );
   });
 });
