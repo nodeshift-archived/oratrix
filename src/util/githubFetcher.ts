@@ -1,4 +1,5 @@
 import axios from 'axios';
+import fieldLoader from '../util/fieldLoader';
 import { Options } from '../core/validator';
 
 type JSObject = Record<string, unknown>;
@@ -93,6 +94,40 @@ async function fetch(
   return result;
 }
 
+async function fetchRepo(query: string, options?: Options): Promise<JSObject> {
+  const axiosOptions = {
+    headers: {
+      Authorization: options?.token ? `token ${options.token}` : '',
+    },
+  };
+  // fetch repo info from GitHub
+  const { data, status } = await axios.get(
+    `https://api.github.com/repos/${query}`,
+    axiosOptions
+  );
+
+  if (status !== 200) {
+    throw new Error(
+      data.message || 'An error occurred when fetching from GitHub'
+    );
+  }
+
+  if (data.archived) {
+    throw new Error(`The repository ${query} has been archived!`);
+  }
+
+  const repoPath = data.html_url.replace(GITHUB, RAW_GITHUB) + PACKAGE_JSON;
+  const isNodeProject = hasPackageJSON(repoPath);
+
+  if (!isNodeProject) {
+    throw new Error(`Can't find package.json for the ${query} repo`);
+  }
+
+  const fields = await fieldLoader.loadFieldsFromURL(repoPath);
+  return fields;
+}
+
 export default {
   fetch,
+  fetchRepo,
 };

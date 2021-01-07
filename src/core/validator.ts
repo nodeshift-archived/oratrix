@@ -5,6 +5,8 @@ import ghFetcher from '../util/githubFetcher';
 import report from '../util/report';
 
 export interface Options {
+  organization?: string;
+  repo?: string;
   config?: string;
   token?: string;
 }
@@ -28,11 +30,36 @@ async function runLocalCheck(options: Options): Promise<void> {
   }
 }
 
-async function runOrganizationCheck(
-  organization: string,
-  options: Options
-): Promise<void> {
-  const packagePaths = await ghFetcher.fetch(organization, options);
+async function runRepoCheck(options: Options): Promise<void> {
+  // get package.json data
+  const packageFields = await ghFetcher.fetchRepo(
+    options.repo as string,
+    options
+  );
+  // load required fields
+  const requiredFields = await fieldLoader.loadFields(options.config);
+  // validate
+  const reportData = differ.run(requiredFields, packageFields);
+
+  console.log(`\n${chalk.bold('Oratrix report')}\n`);
+
+  const output = report.createValidatorReport(
+    Object.keys(requiredFields),
+    reportData
+  );
+
+  console.log(`${output}`);
+
+  if (reportData.length > 0) {
+    throw new Error(`You have ${reportData.length} field(s) missing`);
+  }
+}
+
+async function runOrganizationCheck(options: Options): Promise<void> {
+  const packagePaths = await ghFetcher.fetch(
+    options.organization as string,
+    options
+  );
   const requiredFields = await fieldLoader.loadFields(options.config);
 
   const packageData = await Promise.all(
@@ -66,15 +93,16 @@ async function runOrganizationCheck(
   }
 }
 
-async function run(
-  organization?: string,
-  options: Options = {}
-): Promise<void> {
-  if (organization) {
-    await runOrganizationCheck(organization, options);
-  } else {
-    await runLocalCheck(options);
+async function run(options: Options = {}): Promise<void> {
+  if (options.organization) {
+    await runOrganizationCheck(options);
+    return;
   }
+  if (options.repo) {
+    await runRepoCheck(options);
+    return;
+  }
+  await runLocalCheck(options);
 }
 
 export default {

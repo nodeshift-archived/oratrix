@@ -1,4 +1,5 @@
 # Oratrix
+
 ![Node.js CI](https://github.com/nodeshift/oratrix/workflows/Node.js%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/nodeshift/oratrix/badge.svg?branch=master)](https://coveralls.io/github/nodeshift/oratrix?branch=master)
 
@@ -21,7 +22,7 @@ $ npm install oratrix --save-dev
 
 // inside package.json
 scripts: {
-  "oratrix": "oratrix validate" 
+  "oratrix": "oratrix validate"
 }
 
 $ npm run oratrix
@@ -53,7 +54,7 @@ GitHub organization oratrix will validate
 
 GitHub's oAuth token oratrix will use when contacting GitHub's API
 
-**help** 
+**help**
 
 Shows the below help
 
@@ -70,7 +71,9 @@ Options:
 
   -o, --organization  GitHub organization oratrix will validate
 
+  -r, --repo          GitHub repository oratrix will validate
+
   -c, --config        Custom file with the required package.json fields
-  
+
   -t, --token         GitHub oauth token
 ```
