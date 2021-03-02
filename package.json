@@ -11,10 +11,9 @@
     "postbuild": "cpy --cwd=src --parents 'config/**/*.json' ../dist",
     "dev": "tsc --watch",
     "start": "node dist/cli.js",
-    "prepare": "npm run build",
-    "pretest": "npm run lint",
-    "test": "TS_NODE_FILES=true nyc mocha -r ts-node/register test/**/*.ts",
-    "lint": "eslint . --ext .ts"
+    "prepare": "husky install",
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "TS_NODE_FILES=true nyc mocha -r ts-node/register test/**/*.ts"
   },
   "files": [
     "dist"
@@ -48,6 +47,7 @@
     "coveralls": "^3.1.0",
     "cpy-cli": "^3.1.1",
     "eslint": "^7.9.0",
+    "husky": "^5.1.3",
     "mocha": "^8.1.3",
     "nyc": "^15.1.0",
     "proxyquire": "^2.1.3",
