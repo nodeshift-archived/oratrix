@@ -19,7 +19,7 @@
     "dist"
   ],
   "engines": {
-    "node": "^14 || ^12 || ^10"
+    "node": "^16 || ^14 || ^12"
   },
   "keywords": [],
   "repository": "https://github.com/nodeshift/oratrix.git",
