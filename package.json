@@ -61,7 +61,7 @@
     "chalk": "^4.1.0",
     "cli-table3": "^0.6.0",
     "log-symbols": "^4.0.0",
-    "yargs": "^16.0.1"
+    "yargs": "^17.0.1"
   },
   "preferGlobal": true
 }
