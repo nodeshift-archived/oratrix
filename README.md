@@ -1,5 +1,7 @@
 # Oratrix
 
+# :warning: **This repo is Archived**
+
 ![Node.js CI](https://github.com/nodeshift/oratrix/workflows/Node.js%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/nodeshift/oratrix/badge.svg?branch=main)](https://coveralls.io/github/nodeshift/oratrix?branch=main)
 
